@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">AsyncTask</string>
+    <string-array name="listNama">
+        <item>Niken</item>
+        <item>Ana</item>
+        <item>Syarah</item>
+        <item>Khania</item>
+        <item>Breda</item>
+        <item>Rahmanda</item>
+        <item>Igo</item>
+        <item>Febriani</item>
+        <item>Kusumawati</item>
+        <item>Anas</item>
+    </string-array>
+</resources>
