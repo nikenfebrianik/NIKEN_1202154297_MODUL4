@@ -19,10 +19,13 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    ArrayAdapter<String> adapter;
     private ListView namaMahasiswa;
     private Button bmulai;
 
     String[] items;
+
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
         bmulai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!adapter.isEmpty()) {
+                    adapter.clear();
+                }
                 //buat class async task
                 new AsyncTList(MainActivity.this).execute();
             }
@@ -45,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         // get resource String arraylist
         items = getResources().getStringArray(R.array.listNama);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+        adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_list_item_1,
                 new ArrayList<String>()
         );
@@ -60,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-
         //inflate menu
         inflater.inflate(R.menu.daftar_menu, menu);
         return true;
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     AsyncTList.this.cancel(true);
+                    adapter.clear();
                     dialog.dismiss();
                 }
             });
@@ -115,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             for (String name : items) {
                 publishProgress(name);
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(333);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -126,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(String... values) {
             adapter.add(values[0]);
+            int process = count++;
+            dialog.setProgress(process);
+            dialog.setMessage(process+"%");
         }
 
         @Override

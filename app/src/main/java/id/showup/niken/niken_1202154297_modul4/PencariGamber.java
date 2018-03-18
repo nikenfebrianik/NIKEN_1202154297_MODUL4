@@ -1,5 +1,7 @@
 package id.showup.niken.niken_1202154297_modul4;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -22,6 +24,7 @@ public class PencariGamber extends AppCompatActivity {
     EditText etlink;
     Button bgambar;
     ImageView ivGambar;
+    int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +40,7 @@ public class PencariGamber extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String url = etlink.getText().toString();
-                new AsyncTList().execute(url);
+                new AsyncTList(PencariGamber.this).execute(url);
             }
         });
     }
@@ -47,7 +50,6 @@ public class PencariGamber extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-
         //inflate menu
         inflater.inflate(R.menu.daftar_menu, menu);
         return true;
@@ -72,6 +74,28 @@ public class PencariGamber extends AppCompatActivity {
     }
 
     public class AsyncTList extends AsyncTask<String, String, Bitmap>{
+        ProgressDialog dialog;
+
+        public AsyncTList(PencariGamber activity) {
+            dialog = new ProgressDialog(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setTitle("Loading Data");
+            dialog.setCancelable(false);
+            dialog.setProgress(0);
+            dialog.setMax(100);
+            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel Progress", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    AsyncTList.this.cancel(true);
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
+        }
+
         @Override
         protected Bitmap doInBackground(String... strings) {
             Bitmap bitmap = null;
@@ -85,8 +109,16 @@ public class PencariGamber extends AppCompatActivity {
         }
 
         @Override
+        protected void onProgressUpdate(String... values) {
+            int process = count++;
+            dialog.setProgress(process);
+            dialog.setMessage(process+"%");
+        }
+
+        @Override
         protected void onPostExecute(Bitmap bitmap) {
             ivGambar.setImageBitmap(bitmap);
+            dialog.dismiss();
         }
     }
 }
